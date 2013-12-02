@@ -186,7 +186,7 @@ DiskStorageManager::DiskStorageManager(Tools::PropertySet& ps) : m_pageSize(0), 
 	}
 
 	// find page size.
-	if (bOverwrite == true)
+	if ((bOverwrite == true) || (bFileExists == false))
 	{
 		var = ps.getProperty("PageSize");
 
@@ -204,16 +204,13 @@ DiskStorageManager::DiskStorageManager(Tools::PropertySet& ps) : m_pageSize(0), 
 	}
 	else
 	{
-		if (bFileExists)
-		{
-			m_indexFile.read(reinterpret_cast<char*>(&m_pageSize), sizeof(uint32_t));
-			if (m_indexFile.fail())
-				throw Tools::IllegalStateException("SpatialIndex::DiskStorageManager: Failed reading pageSize.");
+		m_indexFile.read(reinterpret_cast<char*>(&m_pageSize), sizeof(uint32_t));
+		if (m_indexFile.fail())
+			throw Tools::IllegalStateException("SpatialIndex::DiskStorageManager: Failed reading pageSize.");
 
-			m_indexFile.read(reinterpret_cast<char*>(&m_nextPage), sizeof(id_type));
-			if (m_indexFile.fail())
-				throw Tools::IllegalStateException("SpatialIndex::DiskStorageManager: Failed reading nextPage.");
-		}
+		m_indexFile.read(reinterpret_cast<char*>(&m_nextPage), sizeof(id_type));
+		if (m_indexFile.fail())
+			throw Tools::IllegalStateException("SpatialIndex::DiskStorageManager: Failed reading nextPage.");
 	}
 
 	// create buffer.
