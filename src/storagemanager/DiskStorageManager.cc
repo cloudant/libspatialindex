@@ -127,6 +127,8 @@ DiskStorageManager::DiskStorageManager(Tools::PropertySet& ps) : m_pageSize(0), 
 
 	// Open/Create flag.
 	bool bOverwrite = false;
+	bool bFileExists = false;
+
 	var = ps.getProperty("Overwrite");
 
 	if (var.m_varType != Tools::VT_EMPTY)
@@ -157,11 +159,11 @@ DiskStorageManager::DiskStorageManager(Tools::PropertySet& ps) : m_pageSize(0), 
 		std::string sDataFile = std::string(var.m_val.pcVal) + "." + dat;
 
 		// check if file exists.
-		bool bFileExists = CheckFilesExists(ps);
+		bFileExists = CheckFilesExists(ps);
 
 		// check if file can be read/written.
 		if (bFileExists == true && bOverwrite == false)
-		{
+		{		
 			m_indexFile.open(sIndexFile.c_str(), std::ios::in | std::ios::out | std::ios::binary);
 			m_dataFile.open(sDataFile.c_str(), std::ios::in | std::ios::out | std::ios::binary);
 
@@ -202,13 +204,16 @@ DiskStorageManager::DiskStorageManager(Tools::PropertySet& ps) : m_pageSize(0), 
 	}
 	else
 	{
-		m_indexFile.read(reinterpret_cast<char*>(&m_pageSize), sizeof(uint32_t));
-		if (m_indexFile.fail())
-			throw Tools::IllegalStateException("SpatialIndex::DiskStorageManager: Failed reading pageSize.");
+		if (bFileExists)
+		{
+			m_indexFile.read(reinterpret_cast<char*>(&m_pageSize), sizeof(uint32_t));
+			if (m_indexFile.fail())
+				throw Tools::IllegalStateException("SpatialIndex::DiskStorageManager: Failed reading pageSize.");
 
-		m_indexFile.read(reinterpret_cast<char*>(&m_nextPage), sizeof(id_type));
-		if (m_indexFile.fail())
-			throw Tools::IllegalStateException("SpatialIndex::DiskStorageManager: Failed reading nextPage.");
+			m_indexFile.read(reinterpret_cast<char*>(&m_nextPage), sizeof(id_type));
+			if (m_indexFile.fail())
+				throw Tools::IllegalStateException("SpatialIndex::DiskStorageManager: Failed reading nextPage.");
+		}
 	}
 
 	// create buffer.
@@ -305,6 +310,7 @@ void DiskStorageManager::flush()
 	}
 
 	count = static_cast<uint32_t>(m_pageIndex.size());
+
 	m_indexFile.write(reinterpret_cast<const char*>(&count), sizeof(uint32_t));
 	if (m_indexFile.fail())
 		throw Tools::IllegalStateException("SpatialIndex::DiskStorageManager: Corrupted storage manager index file.");
