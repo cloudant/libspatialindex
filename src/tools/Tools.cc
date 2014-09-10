@@ -348,15 +348,15 @@ void Tools::PropertySet::storeToByteArray(byte** data, uint32_t& length)
 	assert(ptr == (*data) + length);
 }
 
-Tools::Variant Tools::PropertySet::getProperty(std::string property) const
+Tools::Variant Tools::PropertySet::getProperty(std::string property)
 {
-   	std::map<std::string, Variant>::const_iterator it = m_propertySet.find(property);
+   	std::map<std::string, Variant>::iterator it = m_propertySet.find(property);
 
    	if (it != m_propertySet.end()) return (*it).second;
    	else return Variant();
 }
 
-void Tools::PropertySet::setProperty(std::string property, Variant const& v)
+void Tools::PropertySet::setProperty(std::string property, Variant& v)
 {
 	std::pair<std::map<std::string, Variant>::iterator, bool> ret;
 	std::map<std::string, Variant>::iterator it;
