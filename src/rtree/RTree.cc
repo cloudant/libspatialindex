@@ -804,6 +804,11 @@ void SpatialIndex::RTree::RTree::getStatistics(IStatistics** out) const
 	*out = new Statistics(m_stats);
 }
 
+void SpatialIndex::RTree::RTree::flush()
+{
+    storeHeader();
+}
+
 void SpatialIndex::RTree::RTree::initNew(Tools::PropertySet& ps)
 {
 	Tools::Variant var;

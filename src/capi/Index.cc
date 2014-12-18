@@ -430,5 +430,6 @@ void Index::SetResultSetLimit(int64_t v)
 
 void Index::flush()
 {
-	m_storage->flush();
+	m_rtree->flush();
+    m_storage->flush();
 }
