@@ -1,3 +1,5 @@
+[![Build Status](https://secure.travis-ci.org/cloudant/libspatialindex.png)](http://travis-ci.org/cloudant/libspatialindex)
+
 *****************************************************************************
  libspatialindex
 *****************************************************************************
