@@ -297,17 +297,17 @@ bool Region::touchesRegion(const Region& r) const
 		throw Tools::IllegalArgumentException(
 			"Region::touchesRegion: Regions have different number of dimensions."
 		);
-	
+
 	for (uint32_t i = 0; i < m_dimension; ++i)
 	{
 		if (
-			(m_pLow[i] >= r.m_pLow[i] + std::numeric_limits<double>::epsilon() &&
-			m_pLow[i] <= r.m_pLow[i] - std::numeric_limits<double>::epsilon()) ||
-			(m_pHigh[i] >= r.m_pHigh[i] + std::numeric_limits<double>::epsilon() &&
-			m_pHigh[i] <= r.m_pHigh[i] - std::numeric_limits<double>::epsilon()))
-			return false;
+			(m_pLow[i] >= r.m_pLow[i] - std::numeric_limits<double>::epsilon() &&
+			m_pLow[i] <= r.m_pLow[i] + std::numeric_limits<double>::epsilon()) ||
+			(m_pHigh[i] >= r.m_pHigh[i] - std::numeric_limits<double>::epsilon() &&
+			m_pHigh[i] <= r.m_pHigh[i] + std::numeric_limits<double>::epsilon()))
+			return true;
 	}
-	return true;
+	return false;
 }
 
 
